@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 
 # Hijab Detection model
 
@@ -203,6 +202,3 @@ new-test-images : https://drive.google.com/drive/folders/1DYPsWVTR76R60au1Ku9kGc
 
 
 
-=======
-# AI-based-Hijab-Classification
->>>>>>> 11b8d04cab7733416b82b087a130f8f28ad3f243
