@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .vscode/
 __pycache__/
 my-env/
@@ -7,9 +8,11 @@ images/
 new-test-images/
 test-images/
 .ipynb_checkpoints/
-.env
+.env/
 
 =======
+=======
+>>>>>>> 11b8d04cab7733416b82b087a130f8f28ad3f243
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -217,4 +220,7 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+<<<<<<< HEAD
 
+=======
+>>>>>>> 11b8d04cab7733416b82b087a130f8f28ad3f243
