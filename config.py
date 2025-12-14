@@ -17,6 +17,7 @@ load_dotenv(dotenv_path=env_path)
 # -------------------------
 def _int(name, default):
     val = os.getenv(name)
+    
     try:
         return int(val) if val is not None else default
     except ValueError:
@@ -25,6 +26,7 @@ def _int(name, default):
 
 def _float(name, default):
     val = os.getenv(name)
+    
     try:
         return float(val) if val is not None else default
     except ValueError:
@@ -33,26 +35,54 @@ def _float(name, default):
     
 def _bool(name, default=False):
     val = os.getenv(name)
+    
     if val is None:
         return default
     return val.lower() in ('true', '1', 'yes', 'y')
 
 
-def _tuple(name, default=None, cast=int):
-    raw = os.getenv(name)
-    if raw is None:
-        return default
-    parts = [p.strip() for p in raw.split(',')]
-    print(parts)
-    if cast == None:
-        return tuple(parts)
+def _tuple(name, default=None, cast=int, expected_len=None):
+    val = os.getenv(name)
+    
+    if val is None:
+        val = default
+
+    # if already tuple
+    if isinstance(val, tuple):
+        return tuple(cast(v) for v in val)
+
+    # must be string now
+    if not isinstance(val, str):
+        val = default
+
+    # parse
+    parts = [p.strip() for p in val.split(",")]
+
     out = []
     for p in parts:
         try:
             out.append(cast(p))
-        except ValueError:
-            out.append(p)
+        except (ValueError, TypeError):
+            return _tuple_fallback(default, cast)
+
+    # length validation
+    if expected_len is None:
+        if isinstance(default, tuple):
+            expected_len = len(default)
+        else:
+            expected_len = len(default.split(","))
+
+    if len(out) != expected_len:
+        return _tuple_fallback(default, cast)
+
     return tuple(out)
+
+
+def _tuple_fallback(default, cast):
+    if isinstance(default, tuple):
+        return tuple(cast(v) for v in default)
+    return tuple(cast(p.strip()) for p in default.split(","))
+
 
 
 # -------------------------
@@ -70,7 +100,7 @@ TRAIN_DICTIONARY = os.getenv('TRAIN_DICTIONARY', 'train_dictionary.txt')
 BATH_SIZE = _int('BATH_SIZE', 20)
 NUMBER_TRAINING_IMAGES = _int('NUMBER_TRAINING_IMAGES', 2000)
 NUMBER_VALIDATION_IMAGES = _int('NUMBER_VALIDATION_IMAGES', 600)
-TARGET_SIZE = _tuple('TARGET_SIZE', default=(150,150), cast=int)
+TARGET_SIZE = _tuple('TARGET_SIZE', default='150,150', cast=int)
 LEARNING_RATE = _float('LEARNING_RATE', 0.00002)
 STEP_PER_EPOCH = _int('STEP_PER_EPOCH', 100)
 EPOCHS = _int('EPOCHS', 40)
